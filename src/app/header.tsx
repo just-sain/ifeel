@@ -1,39 +1,18 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
-import { CloudSmileyIcon, MoonIcon, SunIcon } from '../components/icons'
+import { useTheme } from 'next-themes'
+import Link from 'next/link'
+
+import { CloudSmileyIcon, ThemeModeIcon } from '../components/icons'
 
 export const Header = () => {
+	const { setTheme, theme } = useTheme()
 	const [isMenuOpen, setIsMenuOpen] = useState(false)
-	const [isDarkMode, setIsDarkMode] = useState(false)
-
-	useEffect(() => {
-		const savedTheme = localStorage.getItem('theme')
-		const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-
-		if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-			setIsDarkMode(true)
-			document.documentElement.classList.add('dark')
-			document.documentElement.classList.remove('light')
-		} else if (savedTheme === 'light') {
-			setIsDarkMode(false)
-			document.documentElement.classList.add('light')
-			document.documentElement.classList.remove('dark')
-		}
-	}, [])
 
 	const toggleTheme = () => {
-		const newTheme = !isDarkMode
-		setIsDarkMode(newTheme)
-		localStorage.setItem('theme', newTheme ? 'dark' : 'light')
-		if (newTheme) {
-			document.documentElement.classList.add('dark')
-			document.documentElement.classList.remove('light')
-		} else {
-			document.documentElement.classList.remove('dark')
-			document.documentElement.classList.add('light')
-		}
+		setTheme(theme == 'dark' ? 'light' : 'dark')
 	}
 
 	const scrollToSection = (sectionId: string) => {
@@ -50,7 +29,7 @@ export const Header = () => {
 		<header className='fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 dark:bg-gray-900/80 dark:border-gray-700'>
 			<nav className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
 				<div className='flex justify-between items-center h-16'>
-					<div className='flex-shrink-0 flex items-center space-x-2'>
+					<Link href='/' className='flex-shrink-0 flex items-center space-x-2 cursor-pointer'>
 						<div className='relative'>
 							<CloudSmileyIcon />
 							<svg
@@ -68,11 +47,11 @@ export const Header = () => {
 							</svg>
 						</div>
 						<h1 className='text-2xl font-bold text-gray-900 dark:text-white'>Я чувствую</h1>
-					</div>
+					</Link>
 
 					{/* Desktop Navigation */}
 					<div className='hidden md:block'>
-						<div className='ml-10 flex items-baseline space-x-1'>
+						<div className='ml-10 flex space-x-1 items-center'>
 							<button
 								className='text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors dark:text-white dark:hover:text-blue-400'
 								onClick={() => scrollToSection('psychologist')}
@@ -107,19 +86,22 @@ export const Header = () => {
 					</div>
 
 					{/* Login/Register and Theme toggle */}
-					<div className='flex items-center space-x-4'>
-						<button className='text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors dark:text-white dark:hover:text-blue-400'>
-							Войти
-						</button>
-						<button className='bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors'>
-							Зарегистрироваться
-						</button>
+					<div className='flex items-center gap-4'>
+						<div className='flex items-center gap-4 max-xl:hidden'>
+							<button className='text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors dark:text-white dark:hover:text-blue-400'>
+								Войти
+							</button>
+							<button className='bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors'>
+								Зарегистрироваться
+							</button>
+						</div>
+
 						<button
 							onClick={toggleTheme}
 							className='p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 dark:hover:bg-gray-800 dark:text-gray-300'
 							aria-label='Toggle theme'
 						>
-							{isDarkMode ? <SunIcon /> : <MoonIcon />}
+							<ThemeModeIcon />
 						</button>
 
 						{/* Mobile menu button */}

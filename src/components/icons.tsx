@@ -79,33 +79,23 @@ export const InstagramIcon: React.FC = () => (
 	</svg>
 )
 
-export const SunIcon: React.FC = () => (
-	<svg className='w-6 h-6' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-		<path
-			strokeLinecap='round'
-			strokeLinejoin='round'
-			strokeWidth={2}
-			d='M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z'
-		/>
-	</svg>
-)
-
-export const MoonIcon: React.FC = () => (
-	<svg className='w-6 h-6' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-		<path
-			strokeLinecap='round'
-			strokeLinejoin='round'
-			strokeWidth={2}
-			d='M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z'
-		/>
-	</svg>
-)
-
 export const CloudSmileyIcon: React.FC = () => (
 	<svg className='w-8 h-8' viewBox='0 0 24 24' fill='none' stroke='currentColor'>
 		<path d='M12 2c-1.1 0-2 .9-2 2 0 .38.1.73.29 1.03C8.98 6.37 7 8.54 7 11c0 3.31 2.69 6 6 6s6-2.69 6-6c0-2.46-1.98-4.63-3.29-5.97C14.9 4.73 15 4.38 15 4c0-1.1-.9-2-2-2z' />
 		<circle cx='9' cy='10' r='1' />
 		<circle cx='15' cy='10' r='1' />
 		<path d='M9 13c1 1 3 1 4 0' strokeLinecap='round' />
+	</svg>
+)
+
+export const ThemeModeIcon: React.FC = () => (
+	<svg className='w-6 h-6' stroke='currentColor' fill='none' strokeWidth={0} viewBox='0 0 24 24'>
+		<path d='M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8V16Z' fill='currentColor'></path>
+		<path
+			fillRule='evenodd'
+			clipRule='evenodd'
+			d='M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM12 4V8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16V20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4Z'
+			fill='currentColor'
+		></path>
 	</svg>
 )
