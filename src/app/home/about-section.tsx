@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
-import { BookIcon, ChartIcon, ChatIcon, GroupIcon, HeartIcon, WarningIcon } from './icons'
+import { BookIcon, ChartIcon, ChatIcon, GroupIcon, HeartIcon, WarningIcon } from '@components/icons'
 
 const mockNews = [
 	{
@@ -105,9 +105,9 @@ export const AboutSection = () => {
 									>
 										<div className='mb-4'>
 											<img
-												src={news.image.replace('url(', '').replace(')', '')}
 												alt={news.title}
 												className='w-full h-52 object-cover rounded-lg'
+												src={news.image.replace('url(', '').replace(')', '')}
 											/>
 										</div>
 										<div className='flex items-start space-x-4'>

@@ -108,11 +108,13 @@ export default function TestPage() {
 			(scores.J > scores.P ? 'J' : 'P')
 
 		const personality = mbtiTypes[type as keyof typeof mbtiTypes]
+
 		return { type, name: personality.name, description: personality.description }
 	}
 
 	if (quizState.showResult) {
 		const result = calculateResult()
+
 		return (
 			<div className='pt-24 min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-16 px-4'>
 				<div className='max-w-4xl mx-auto text-center'>
@@ -131,6 +133,7 @@ export default function TestPage() {
 					</div>
 
 					<button
+						className='mt-8 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300'
 						onClick={() => {
 							setQuizState({
 								step: 0,
@@ -139,7 +142,6 @@ export default function TestPage() {
 								showResult: false,
 							})
 						}}
-						className='mt-8 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300'
 					>
 						Пройти тест заново
 					</button>
@@ -158,7 +160,7 @@ export default function TestPage() {
 							<div
 								className='bg-indigo-600 h-2.5 rounded-full transition-all duration-300'
 								style={{ width: `${((quizState.step + 1) / statements.length) * 100}%` }}
-							></div>
+							/>
 						</div>
 						<p className='text-sm text-gray-600 dark:text-gray-400 mt-2'>
 							Утверждение {quizState.step + 1} из {statements.length}
@@ -167,20 +169,20 @@ export default function TestPage() {
 					<h2 className='text-2xl font-semibold text-gray-900 dark:text-white mb-8 text-center'>
 						{statements[quizState.step].statement}
 					</h2>
-					<LikertScale selectedOption={quizState.selectedOption} onSelect={handleAnswer} step={quizState.step} />
+					<LikertScale selectedOption={quizState.selectedOption} step={quizState.step} onSelect={handleAnswer} />
 					<div className='flex justify-center gap-4'>
 						{quizState.step > 0 && (
 							<button
-								onClick={handleBack}
 								className='bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg transition duration-300'
+								onClick={handleBack}
 							>
 								Назад
 							</button>
 						)}
 						<button
-							onClick={handleNext}
 							className='bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed'
 							disabled={quizState.selectedOption === null}
+							onClick={handleNext}
 						>
 							{quizState.step === statements.length - 1 ? 'Завершить' : 'Далее'}
 						</button>

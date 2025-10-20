@@ -1,9 +1,9 @@
-import { AboutSection } from '@components/about-section'
-import { HeroSection } from '@components/hero-section'
-import { PersonalityTestSection } from '@components/personality-test-section'
-import { ServicesSection } from '@components/services-section'
+import { AboutSection } from './home/about-section'
+import { HeroSection } from './home/hero-section'
+import { PersonalityTestSection } from './home/personality-test-section'
+import { ServicesSection } from './home/services-section'
 
-export default function Home() {
+function Home() {
 	return (
 		<div className='min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800'>
 			<HeroSection />
@@ -13,3 +13,5 @@ export default function Home() {
 		</div>
 	)
 }
+
+export default Home

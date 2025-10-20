@@ -35,7 +35,7 @@ export default tseslint.config(js.configs.recommended, tseslint.configs.recommen
 
 	rules: {
 		// base
-		'no-console': 'warn',
+		'no-console': 'off',
 		'prettier/prettier': 'warn',
 
 		// react

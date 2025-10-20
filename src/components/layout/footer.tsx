@@ -1,4 +1,4 @@
-import { InstagramIcon, TikTokIcon, YouTubeIcon } from '../components/icons'
+import { InstagramIcon, TikTokIcon, YouTubeIcon } from '@icons'
 
 const mockSocialMedia = [
 	{ icon: TikTokIcon, href: '#', label: 'TikTok' },
@@ -36,9 +36,9 @@ export const Footer = () => {
 							{mockSocialMedia.map((social) => (
 								<a
 									key={social.label}
-									href={social.href}
-									className='text-gray-400 hover:text-white transition-colors'
 									aria-label={social.label}
+									className='text-gray-400 hover:text-white transition-colors'
+									href={social.href}
 								>
 									<social.icon />
 								</a>
@@ -54,7 +54,7 @@ export const Footer = () => {
 						<ul className='space-y-2'>
 							{mockAbout.map((item) => (
 								<li key={item.title}>
-									<a href={item.href} className='text-gray-400 hover:text-white transition-colors'>
+									<a className='text-gray-400 hover:text-white transition-colors' href={item.href}>
 										{item.title}
 									</a>
 								</li>
@@ -66,7 +66,7 @@ export const Footer = () => {
 						<ul className='space-y-2'>
 							{mockUseful.map((item) => (
 								<li key={item.title}>
-									<a href={item.href} className='text-gray-400 hover:text-white transition-colors'>
+									<a className='text-gray-400 hover:text-white transition-colors' href={item.href}>
 										{item.title}
 									</a>
 								</li>
@@ -78,7 +78,7 @@ export const Footer = () => {
 						<ul className='space-y-2'>
 							{mockOther.map((item) => (
 								<li key={item.title}>
-									<a href={item.href} className='text-gray-400 hover:text-white transition-colors'>
+									<a className='text-gray-400 hover:text-white transition-colors' href={item.href}>
 										{item.title}
 									</a>
 								</li>

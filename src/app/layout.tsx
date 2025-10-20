@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
-// import { ThemeProvider } from 'providers/theme-provider'
-import { ThemeProvider } from 'next-themes'
 import { Geist, Geist_Mono } from 'next/font/google'
 
-import { Footer } from './footer'
-import './globals.css'
-import { Header } from './header'
+import '@assets/globals.css'
+import { Footer } from '@components/layout/footer'
+import { Header } from '@components/layout/header'
+import { ThemeProvider } from '@providers'
+import { AuthProvider } from 'providers/auth-provider'
 
 // fonts
 const geistSans = Geist({
@@ -31,13 +31,15 @@ export default function RootLayout({
 	children: React.ReactNode
 }>) {
 	return (
-		<html lang='en' suppressHydrationWarning>
+		<html lang='en' suppressHydrationWarning={true}>
 			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-				<ThemeProvider attribute='class' disableTransitionOnChange themes={['dark', 'light']} defaultTheme='system'>
-					<Header />
-					{children}
-					<Footer />
-				</ThemeProvider>
+				<AuthProvider>
+					<ThemeProvider>
+						<Header />
+						{children}
+						<Footer />
+					</ThemeProvider>
+				</AuthProvider>
 			</body>
 		</html>
 	)

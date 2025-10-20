@@ -39,16 +39,16 @@ export function LikertScale({ selectedOption, onSelect, step }: LikertScaleProps
 						} flex items-center justify-center`}
 					>
 						<input
-							type='radio'
-							name={`statement-${step}`}
-							value={index}
 							checked={selectedOption === index}
-							onChange={() => onSelect(index)}
 							className='sr-only'
+							name={`statement-${step}`}
+							type='radio'
+							value={index}
+							onChange={() => onSelect(index)}
 						/>
 						<div
 							className={`w-2 h-2 rounded-full bg-white opacity-0 peer-checked:opacity-100 transition-opacity`}
-						></div>
+						/>
 					</label>
 				))}
 			</div>

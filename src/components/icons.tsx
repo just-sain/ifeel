@@ -3,10 +3,10 @@ import React from 'react'
 export const BookIcon: React.FC = () => (
 	<svg className='w-6 h-6 text-white' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
 		<path
+			d='M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253'
 			strokeLinecap='round'
 			strokeLinejoin='round'
 			strokeWidth={2}
-			d='M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253'
 		/>
 	</svg>
 )
@@ -14,10 +14,10 @@ export const BookIcon: React.FC = () => (
 export const ChatIcon: React.FC = () => (
 	<svg className='w-6 h-6 text-white' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
 		<path
+			d='M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z'
 			strokeLinecap='round'
 			strokeLinejoin='round'
 			strokeWidth={2}
-			d='M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z'
 		/>
 	</svg>
 )
@@ -25,10 +25,10 @@ export const ChatIcon: React.FC = () => (
 export const GroupIcon: React.FC = () => (
 	<svg className='w-6 h-6 text-white' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
 		<path
+			d='M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'
 			strokeLinecap='round'
 			strokeLinejoin='round'
 			strokeWidth={2}
-			d='M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'
 		/>
 	</svg>
 )
@@ -36,10 +36,10 @@ export const GroupIcon: React.FC = () => (
 export const WarningIcon: React.FC = () => (
 	<svg className='w-6 h-6 text-white' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
 		<path
+			d='M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z'
 			strokeLinecap='round'
 			strokeLinejoin='round'
 			strokeWidth={2}
-			d='M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z'
 		/>
 	</svg>
 )
@@ -47,17 +47,17 @@ export const WarningIcon: React.FC = () => (
 export const HeartIcon: React.FC = () => (
 	<svg className='w-6 h-6 text-white' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
 		<path
+			d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'
 			strokeLinecap='round'
 			strokeLinejoin='round'
 			strokeWidth={2}
-			d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'
 		/>
 	</svg>
 )
 
 export const ChartIcon: React.FC = () => (
 	<svg className='w-6 h-6 text-white' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-		<path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' />
+		<path d='M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} />
 	</svg>
 )
 
@@ -80,7 +80,7 @@ export const InstagramIcon: React.FC = () => (
 )
 
 export const CloudSmileyIcon: React.FC = () => (
-	<svg className='w-8 h-8' viewBox='0 0 24 24' fill='none' stroke='currentColor'>
+	<svg className='w-8 h-8' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
 		<path d='M12 2c-1.1 0-2 .9-2 2 0 .38.1.73.29 1.03C8.98 6.37 7 8.54 7 11c0 3.31 2.69 6 6 6s6-2.69 6-6c0-2.46-1.98-4.63-3.29-5.97C14.9 4.73 15 4.38 15 4c0-1.1-.9-2-2-2z' />
 		<circle cx='9' cy='10' r='1' />
 		<circle cx='15' cy='10' r='1' />
@@ -89,13 +89,13 @@ export const CloudSmileyIcon: React.FC = () => (
 )
 
 export const ThemeModeIcon: React.FC = () => (
-	<svg className='w-6 h-6' stroke='currentColor' fill='none' strokeWidth={0} viewBox='0 0 24 24'>
-		<path d='M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8V16Z' fill='currentColor'></path>
+	<svg className='w-6 h-6' fill='none' stroke='currentColor' strokeWidth={0} viewBox='0 0 24 24'>
+		<path d='M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8V16Z' fill='currentColor' />
 		<path
-			fillRule='evenodd'
 			clipRule='evenodd'
 			d='M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM12 4V8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16V20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4Z'
 			fill='currentColor'
-		></path>
+			fillRule='evenodd'
+		/>
 	</svg>
 )

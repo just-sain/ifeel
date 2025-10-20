@@ -25,11 +25,20 @@
 			"@/*": ["./src/*"],
 			"@components/*": ["components/*"],
 			"@lib/*": ["lib/*"],
-			"@hooks/*": ["hooks/*"],
-			"@shared/*": ["shared/*"]
+			"@shared/*": ["shared/*"],
+			"@assets/*": ["assets/*"],
+			// export * from * file in index.ts
+			"@hoc": ["hoc/index.ts"],
+			"@ui": ["components/ui/index.ts"],
+			"@contexts": ["contexts/index.ts"],
+			"@icons": ["components/icons.tsx"],
+			"@types": ["shared/types/index.ts"],
+			"@services": ["services/index.ts"],
+			"@hooks": ["hooks/index.ts"],
+			"@providers": ["providers/index.ts"]
 		},
 		"plugins": [{ "name": "next" }]
 	},
-	"include": ["svgr.d.ts", "next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "tailwind.config.js"],
+	"include": ["svgr.d.ts", "next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
 	"exclude": ["node_modules"]
 }
