@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
 import Link from 'next/link'
 
+import { Button } from '@components/ui'
 import { useAuth } from '@hooks'
 import { CloudSmileyIcon, ThemeModeIcon } from '@icons'
 import { getTodaysMood } from '@services'
@@ -15,7 +16,7 @@ export const Header = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false)
 	const [todaysMood, setTodaysMood] = useState<IMood | null>(null)
 
-	const { isLoading, user } = useAuth()
+	const { isLoading, user, logout } = useAuth()
 
 	const toggleTheme = () => {
 		setTheme(theme == 'dark' ? 'light' : 'dark')
@@ -100,7 +101,12 @@ export const Header = () => {
 								</>
 							)}
 							{!isLoading && !!user && <p className='italic'>{user.fullName}</p>}
-							{!isLoading && !!todaysMood && <p>{todaysMood.label}</p>}
+							{!isLoading && !!user && !!todaysMood && <p>{todaysMood.label}</p>}
+							{!isLoading && !!user && (
+								<Button className='' color='indigo' size='sm' variant='outline' onClick={() => logout()}>
+									Выйти
+								</Button>
+							)}
 						</div>
 
 						<button

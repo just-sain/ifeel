@@ -14,16 +14,19 @@ export const withAuth = <P extends object>(WrappedComponent: ComponentType<P>) =
 
 		useEffect(() => {
 			if (!isLoading && !user) {
-				router.push('/login') // Redirect to login page if not authenticated
+				// redirect to login page if not auth
+				router.push('/login')
 			}
-		}, [user, isLoading, router])
+		}, [isLoading, router])
 
+		// loading
 		if (isLoading) {
-			return <div>Loading...</div> // Or a proper loading component
+			return <div>Loading...</div>
 		}
 
+		// prevent rendering while redirecting
 		if (!user) {
-			return null // Prevent rendering while redirecting
+			return null
 		}
 
 		return <WrappedComponent {...props} />

@@ -1,118 +1,105 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import { type FC, useEffect, useState } from 'react'
 
-import { useAuth } from '@hooks'
-import { getDiaries } from '@services'
-import type { IDiary } from '@shared/types'
+import { withAuth } from '@hoc'
+import { createDiary, deleteDiary, getDiaries, updateDiary } from '@services'
+import type { IDiary } from '@types'
+import { Loading } from '@ui'
 
-export default function DiaryPage() {
-	const { isLoading, user } = useAuth()
+import { DiaryAside } from './diary-aside'
+import { DiaryForm } from './diary-form'
 
-	const [diary, setDiary] = useState<IDiary[] | null>(null)
-	const [text, setText] = useState<string>('')
-	const [theme, setTheme] = useState<'dark' | 'light'>('light')
-	const [editing, setEditing] = useState<boolean>(false)
+const DiaryPage: FC = () => {
+	const [isLoading, setIsLoading] = useState<boolean>(true)
+	const [diaries, setDiaries] = useState<IDiary[] | null>(null)
+	const [selectedDiary, setSelectedDiary] = useState<IDiary | null>(null)
 
+	// first load
 	useEffect(() => {
-		if (isLoading || !user) return
-
 		getUserDiaries()
-	}, [isLoading])
+	}, [])
 
 	const getUserDiaries = async () => {
+		setIsLoading(true)
 		const data = await getDiaries()
 
-		if (data?.content) setDiary(data.content)
+		if (data) {
+			setDiaries(data.content)
+
+			// find selected diary or set null
+			if (selectedDiary) {
+				setSelectedDiary(data?.content.find((d) => d.id === selectedDiary?.id) ?? null)
+			}
+		} else {
+			// set null for selected diary
+			setSelectedDiary(null)
+		}
+
+		setIsLoading(false)
 	}
 
-	function handleSave(e?: React.FormEvent) {
-		e?.preventDefault()
-		// const trimmed = text.trim()
+	const onDelete = async (d: IDiary | null) => {
+		if (!d) return
+		setIsLoading(true)
+		const data = await deleteDiary(d.id)
 
-		// TODO: save
+		if (data == false) {
+			// error
+			// TODO: notification
+		}
+
+		getUserDiaries()
 	}
 
-	function handleDelete() {
-		// const d = targetDate || date
-		// TODO: del
+	const onSubmit = async (diary: IDiary) => {
+		if (!diary || !diary.title || !diary.content) return
+		setIsLoading(true)
+
+		let data: IDiary | null = null
+
+		if (diary.id === 0) {
+			// create new if id equal 0
+			data = await createDiary(diary.title, diary.content)
+		} else if (diary.id > 0) {
+			// update if diary id is not 0
+			data = await updateDiary(diary.id, diary.title, diary.content)
+		}
+
+		if (!data) {
+			// error
+			// TODO: notification
+		}
+
+		getUserDiaries()
 	}
 
-	function handleClearAll() {
-		if (!confirm('Clear ALL diary entries? This cannot be undone.')) return
-
-		//TODO: clear
+	const onDraftCreate = () => {
+		setSelectedDiary({
+			id: 0,
+			userId: '',
+			title: '',
+			content: '',
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		})
 	}
 
 	return (
-		<div className='w-full min-h-screen mt-26 px-6'>
-			<section className='grid grid-cols-1 md:grid-cols-3 gap-6 '>
-				{/* Form */}
-				<form
-					onSubmit={handleSave}
-					className='md:col-span-2 bg-slate-50 dark:bg-slate-800 rounded-2xl p-4 shadow-sm'
-				>
-					<div className='flex items-center gap-3 mb-4'>
-						<label className='text-sm font-medium'>Date</label>
-						<input
-							type='date'
-							className='ml-auto bg-white dark:bg-slate-700 rounded px-2 py-1 border dark:border-slate-700'
-							aria-label='Choose date'
-						/>
-						<button type='button' className='ml-2 text-sm px-2 py-1 rounded border'>
-							Today
-						</button>
-					</div>
+		<section className='w-full mx-auto max-w-[1500px] grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 mb-18 px-6'>
+			<Loading isLoading={isLoading} />
 
-					<textarea
-						value={text}
-						onChange={(e) => setText(e.target.value)}
-						placeholder='Write your opinion, thoughts, or short diary entry...'
-						rows={12}
-						className='w-full rounded-lg p-3 resize-vertical bg-white dark:bg-slate-700 border dark:border-slate-700'
-					/>
+			<DiaryForm diary={selectedDiary} handleSubmit={onSubmit} onDelete={onDelete} />
 
-					<div className='flex items-center gap-3 mt-4'>
-						<button type='submit' className='rounded px-4 py-2 bg-indigo-600 text-white hover:opacity-95'>
-							{editing ? 'Update' : 'Save'}
-						</button>
-
-						<button type='button' className='rounded px-3 py-2 border'>
-							Reset
-						</button>
-
-						<button
-							type='button'
-							onClick={() => handleDelete()}
-							className='rounded px-3 py-2 border text-red-600 dark:text-red-300'
-						>
-							Delete
-						</button>
-
-						<div className='ml-auto text-sm opacity-80'>Entries: </div>
-					</div>
-				</form>
-
-				{/* Entries list */}
-				<aside className='bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm'>
-					<h2 className='font-semibold mb-4'>Записи</h2>
-
-					<ul className=''>
-						{!diary ? (
-							<div className='mt-2 text-xs opacity-70'>
-								Tip: entries are stored locally in your browser. Use export/import for backups (not
-								implemented).
-							</div>
-						) : (
-							diary.map((d) => (
-								<li className='mt-2 text-base border-t border-gray-800 border-dotted' key={d.id}>
-									{d.title}
-								</li>
-							))
-						)}
-					</ul>
-				</aside>
-			</section>
-		</div>
+			<DiaryAside
+				diaries={diaries}
+				selectedDiary={selectedDiary}
+				onCreate={onDraftCreate}
+				onDelete={onDelete}
+				onSelectDiary={setSelectedDiary}
+			/>
+		</section>
 	)
 }
+
+export default withAuth(DiaryPage)

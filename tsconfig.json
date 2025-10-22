@@ -34,6 +34,7 @@
 			"@icons": ["components/icons.tsx"],
 			"@types": ["shared/types/index.ts"],
 			"@services": ["services/index.ts"],
+			"@helpers": ["helpers/index.ts"],
 			"@hooks": ["hooks/index.ts"],
 			"@providers": ["providers/index.ts"]
 		},
