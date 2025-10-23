@@ -1,7 +1,7 @@
 import type { FC, HTMLAttributes } from 'react'
 
-import { DeleteRowIcon } from '@components/icons'
-import type { IDiary } from '@shared/types'
+import { DeleteRowIcon } from '@icons'
+import type { IDiary } from '@types'
 import { Button } from '@ui'
 import clsx from 'clsx'
 

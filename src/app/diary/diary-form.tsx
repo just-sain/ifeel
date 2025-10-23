@@ -1,8 +1,8 @@
 import { type ChangeEvent, type FC, type FormEvent, type FormHTMLAttributes, useEffect, useState } from 'react'
 
-import { Button, Input, Textarea } from '@components/ui'
 import { normalizeDateIso } from '@helpers'
-import type { IDiary } from '@shared/types'
+import type { IDiary } from '@types'
+import { Button, Input, Textarea } from '@ui'
 
 interface DiaryFormProps extends FormHTMLAttributes<HTMLFormElement> {
 	handleSubmit: (diary: IDiary) => void
@@ -104,7 +104,7 @@ export const DiaryForm: FC<DiaryFormProps> = ({
 						type='submit'
 						onClick={handleSave}
 					>
-						Save
+						Сохранить
 					</Button>
 
 					<Button
@@ -115,7 +115,7 @@ export const DiaryForm: FC<DiaryFormProps> = ({
 						type='button'
 						onClick={() => setDraftDiary(selectedDiary)}
 					>
-						Reset
+						Сбросить
 					</Button>
 				</div>
 
@@ -133,7 +133,7 @@ export const DiaryForm: FC<DiaryFormProps> = ({
 						variant='outline'
 						onClick={() => onDelete(draftDiary)}
 					>
-						Delete
+						Удалить
 					</Button>
 				</div>
 			</div>

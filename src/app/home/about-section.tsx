@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
-import { BookIcon, ChartIcon, ChatIcon, GroupIcon, HeartIcon, WarningIcon } from '@components/icons'
+import { BookIcon, ChartIcon, ChatIcon, GroupIcon, HeartIcon, WarningIcon } from '@icons'
 
 const mockNews = [
 	{

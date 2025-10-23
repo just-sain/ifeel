@@ -4,7 +4,7 @@ import { type ReactNode, useEffect, useState } from 'react'
 
 import { AuthContext, type AuthContextType } from '@contexts'
 import { getMe, login as loginService, logout as logoutService, register as registerService } from '@services'
-import type { IUser } from '@shared/types'
+import type { IUser } from '@types'
 
 interface AuthProviderProps {
 	children: ReactNode

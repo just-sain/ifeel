@@ -23,13 +23,12 @@
 		"baseUrl": "src",
 		"paths": {
 			"@/*": ["./src/*"],
-			"@components/*": ["components/*"],
 			"@lib/*": ["lib/*"],
-			"@shared/*": ["shared/*"],
 			"@assets/*": ["assets/*"],
 			// export * from * file in index.ts
-			"@hoc": ["hoc/index.ts"],
+			"@layout": ["components/layout/index.ts"],
 			"@ui": ["components/ui/index.ts"],
+			"@hoc": ["hoc/index.ts"],
 			"@contexts": ["contexts/index.ts"],
 			"@icons": ["components/icons.tsx"],
 			"@types": ["shared/types/index.ts"],

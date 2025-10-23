@@ -1,4 +1,4 @@
-import type { IDiary, IPagination } from '@shared/types'
+import type { IDiary, IPagination } from '@types'
 
 import { API_URL, getAuthToken } from './token'
 

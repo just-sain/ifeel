@@ -2,10 +2,8 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 
 import '@assets/globals.css'
-import { Footer } from '@components/layout/footer'
-import { Header } from '@components/layout/header'
-import { ThemeProvider } from '@providers'
-import { AuthProvider } from 'providers/auth-provider'
+import { Footer, Header } from '@layout'
+import { AuthProvider, ThemeProvider } from '@providers'
 
 // fonts
 const geistSans = Geist({
@@ -31,7 +29,7 @@ export default function RootLayout({
 	children: React.ReactNode
 }>) {
 	return (
-		<html lang='en' suppressHydrationWarning={true}>
+		<html data-scroll-behavior='smooth' lang='ru' suppressHydrationWarning={true}>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased bg-white dark:bg-gray-800 flex flex-col items-stretch justify-between`}
 			>

@@ -1,4 +1,5 @@
 export * from './auth-types'
+export * from './chat-types'
 export * from './diary-types'
 export * from './global-types'
 export * from './mood-types'

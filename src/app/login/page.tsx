@@ -1,31 +1,41 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 import { useAuth } from '@hooks'
-import { Button, Input } from '@ui'
+import { Button, Input, Loading } from '@ui'
 
 export default function LoginPage() {
 	const { push } = useRouter()
-	const { login } = useAuth()
+	const { login, refresh, user, isLoading } = useAuth()
 
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
+
+	// if user login redirect to home page
+	useEffect(() => {
+		if (isLoading || !user) return
+
+		push('/')
+	}, [isLoading])
 
 	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault()
 		const success = await login(email, password)
 
 		if (success) {
+			refresh()
 			push('/')
 		}
 	}
 
 	return (
 		<div className='flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900'>
+			<Loading isLoading={isLoading} />
+
 			<div className='w-full max-w-md rounded-lg bg-white p-10 shadow-lg dark:bg-gray-800'>
 				<h2 className='mb-8 text-center text-3xl font-semibold text-gray-800 dark:text-gray-100'>
 					Войти в аккаунт

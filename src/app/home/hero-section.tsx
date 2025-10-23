@@ -1,4 +1,43 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+
+import Link from 'next/link'
+
+const quotes = [
+	{
+		text: 'Самопознание - это путешествие, которое длится всю жизнь. Каждый шаг на этом пути делает нас сильнее и мудрее.',
+		author: 'Карл Юнг',
+		role: 'Психоаналитик',
+	},
+	{
+		text: 'Эмоции - это язык души. Научитесь слушать себя, и вы услышите ответы на все вопросы.',
+		author: 'Виктор Франкл',
+		role: 'Психолог',
+	},
+	{
+		text: 'Ваше прошлое не определяет ваше будущее. Каждый день - это возможность начать заново.',
+		author: 'Абрахам Маслоу',
+		role: 'Психолог',
+	},
+	{
+		text: 'Счастье - это не отсутствие проблем, а умение с ними справляться.',
+		author: 'Эрих Фромм',
+		role: 'Психоаналитик',
+	},
+]
+
 export const HeroSection = () => {
+	const [activeQuoteIndex, setActiveQuoteIndex] = useState(0)
+
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setActiveQuoteIndex((prevIndex) => (prevIndex + 1) % quotes.length)
+		}, 5000)
+
+		return () => clearInterval(interval)
+	}, [quotes.length])
+
 	return (
 		<section className='pt-16 min-h-screen flex items-center px-4 sm:px-6 lg:px-8 relative overflow-hidden' id='home'>
 			{/* Background Image */}
@@ -19,12 +58,18 @@ export const HeroSection = () => {
 							специалисты помогут вам найти путь к гармонии и благополучию.
 						</p>
 						<div className='flex flex-col sm:flex-row gap-4'>
-							<button className='bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-lg'>
+							<Link
+								className='bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-lg'
+								href='https://wa.link/vs0qne'
+							>
 								Записаться на консультацию
-							</button>
-							<button className='border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105'>
+							</Link>
+							<Link
+								className='border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105 text-center'
+								href='#about'
+							>
 								Узнать больше
-							</button>
+							</Link>
 						</div>
 					</div>
 
@@ -32,47 +77,16 @@ export const HeroSection = () => {
 					<div className='animate-slide-in-right'>
 						<div className='relative bg-white/40 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-2xl p-8 min-h-[400px] border border-white/20'>
 							<div className='rotating-quotes'>
-								<div className='quote-item active'>
-									<div className='text-6xl text-blue-600 dark:text-blue-400 mb-4'>"</div>
-									<p className='text-lg text-gray-700 dark:text-gray-300 mb-6 italic'>
-										"Самопознание - это путешествие, которое длится всю жизнь. Каждый шаг на этом пути делает
-										нас сильнее и мудрее."
-									</p>
-									<div className='text-right'>
-										<p className='font-semibold text-gray-900 dark:text-white'>Карл Юнг</p>
-										<p className='text-sm text-gray-600 dark:text-gray-400'>Психоаналитик</p>
+								{quotes.map((quote, index) => (
+									<div key={index} className={`quote-item ${index === activeQuoteIndex ? 'active' : ''}`}>
+										<div className='text-6xl text-blue-600 dark:text-blue-400 mb-4'>"</div>
+										<p className='text-lg text-gray-700 dark:text-gray-300 mb-6 italic'>"{quote.text}"</p>
+										<div className='text-right'>
+											<p className='font-semibold text-gray-900 dark:text-white'>{quote.author}</p>
+											<p className='text-sm text-gray-600 dark:text-gray-400'>{quote.role}</p>
+										</div>
 									</div>
-								</div>
-								<div className='quote-item'>
-									<div className='text-6xl text-blue-600 dark:text-blue-400 mb-4'>"</div>
-									<p className='text-lg text-gray-700 dark:text-gray-300 mb-6 italic'>
-										"Эмоции - это язык души. Научитесь слушать себя, и вы услышите ответы на все вопросы."
-									</p>
-									<div className='text-right'>
-										<p className='font-semibold text-gray-900 dark:text-white'>Виктор Франкл</p>
-										<p className='text-sm text-gray-600 dark:text-gray-400'>Психолог</p>
-									</div>
-								</div>
-								<div className='quote-item'>
-									<div className='text-6xl text-blue-600 dark:text-blue-400 mb-4'>"</div>
-									<p className='text-lg text-gray-700 dark:text-gray-300 mb-6 italic'>
-										"Ваше прошлое не определяет ваше будущее. Каждый день - это возможность начать заново."
-									</p>
-									<div className='text-right'>
-										<p className='font-semibold text-gray-900 dark:text-white'>Абрахам Маслоу</p>
-										<p className='text-sm text-gray-600 dark:text-gray-400'>Психолог</p>
-									</div>
-								</div>
-								<div className='quote-item'>
-									<div className='text-6xl text-blue-600 dark:text-blue-400 mb-4'>"</div>
-									<p className='text-lg text-gray-700 dark:text-gray-300 mb-6 italic'>
-										"Счастье - это не отсутствие проблем, а умение с ними справляться."
-									</p>
-									<div className='text-right'>
-										<p className='font-semibold text-gray-900 dark:text-white'>Эрих Фромм</p>
-										<p className='text-sm text-gray-600 dark:text-gray-400'>Психоаналитик</p>
-									</div>
-								</div>
+								))}
 							</div>
 						</div>
 					</div>
