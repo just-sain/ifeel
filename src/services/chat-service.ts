@@ -37,6 +37,7 @@ export class ChatService {
 			senderId,
 			type,
 		}
+
 		this.messages.push(message)
 		this.onMessage?.([...this.messages])
 	}
@@ -44,6 +45,7 @@ export class ChatService {
 	connect() {
 		if (this.connected) {
 			this.disconnect()
+
 			return
 		}
 
@@ -51,6 +53,7 @@ export class ChatService {
 
 		if (!token) {
 			this.logMessage('❌ No auth token available')
+
 			return
 		}
 
@@ -75,8 +78,6 @@ export class ChatService {
 						this.roomId = data.room
 						this.onRoomIdChange?.(this.roomId)
 					}
-
-					console.log(data)
 
 					if (data.peer) {
 						this.logMessage(`Пользователь ${data.peer} подключился. Начните общение!`, 'system')
@@ -124,10 +125,12 @@ export class ChatService {
 	sendMessage(content: string) {
 		if (!this.connected) {
 			alert('Сначала подключись!')
+
 			return
 		}
 		if (!this.roomId.trim() || !content.trim()) {
 			alert('Введите сообщение (и roomId должен быть получен)')
+
 			return
 		}
 		const payload = { roomId: this.roomId, senderId: this.currentUser, content }

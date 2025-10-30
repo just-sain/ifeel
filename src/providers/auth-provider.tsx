@@ -21,7 +21,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
 				setUser(userData)
 			} catch (error) {
-				console.error('Failed to initialize auth:', error)
+				console.warn('Failed to initialize auth:', error)
 			} finally {
 				setIsLoading(false)
 			}

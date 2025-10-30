@@ -16,7 +16,7 @@ export const getMe = async (): Promise<IUser | null> => {
 			},
 		})
 
-		if (!response.ok) throw new Error('Failed to fetch user')
+		if (!response.ok) console.warn('Failed to fetch user')
 
 		return await response.json()
 	} catch (error) {
