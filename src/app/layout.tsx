@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import '@assets/globals.css'
 import { Footer, Header } from '@layout'
 import { AuthProvider, ThemeProvider } from '@providers'
+import ChatBot from 'components/chat-bot'
 
 // fonts
 const geistSans = Geist({
@@ -37,6 +38,7 @@ export default function RootLayout({
 					<ThemeProvider>
 						<Header />
 						<main className='flex-1 mt-16'>{children}</main>
+						<ChatBot />
 						<Footer />
 					</ThemeProvider>
 				</AuthProvider>
