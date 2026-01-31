@@ -4,12 +4,7 @@ import { useAuth } from '@hooks'
 import type { IMood } from '@types'
 import { Button } from '@ui'
 
-const navLinks = [
-	{ name: 'Бесплатная консультация', href: '/support/contact' },
-	{ name: 'Анкета вопросов', href: '/test' },
-	{ name: 'Блокнот', href: '/diary' },
-	{ name: 'Техники', href: '/support/techniques' },
-]
+import { navLinks } from './data'
 
 interface HeaderMobileNavProps {
 	isMenuOpen: boolean

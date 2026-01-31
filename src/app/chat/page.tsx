@@ -5,116 +5,121 @@ import { useEffect, useRef, useState } from 'react'
 import { Message } from '@ui'
 import { useSocketChat } from 'hooks/use-socket-chat'
 
-type ChatState = 'landing' | 'searching' | 'chatting'
+type ChatMode = 'landing' | 'anonymous' | 'psychologist' | 'roulette'
+type ChatState = 'searching' | 'chatting'
 
 const ChatPage = () => {
-	const { status, messages, connected, roomId, disconnect, connect, sendMessage } = useSocketChat()
+	const { status, messages, connected, roomId, connect, disconnect, sendMessage } = useSocketChat()
 
+	const [chatMode, setChatMode] = useState<ChatMode>('landing')
+	const [chatState, setChatState] = useState<ChatState>('searching')
 	const [messageText, setMessageText] = useState('')
-	const [chatState, setChatState] = useState<ChatState>('landing')
-	const [onlineUsers] = useState(42) // Mock online users count
-	const logRef = useRef<HTMLDivElement>(null)
+	const [onlineUsers, setOnlineUsers] = useState(42)
 
-	const handleConnect = () => {
+	const scrollRef = useRef<HTMLDivElement>(null)
+
+	// 🌟 1. Логика авто-отключения при уходе/закрытии
+	useEffect(() => {
+		// Функция для обработки закрытия вкладки/браузера
+		const handleBeforeUnload = () => {
+			disconnect()
+		}
+
+		// Добавляем слушатель системного события закрытия окна
+		window.addEventListener('beforeunload', handleBeforeUnload)
+
+		// Cleanup функция: срабатывает при размонтировании компонента (переход на другую страницу SPA)
+		return () => {
+			window.removeEventListener('beforeunload', handleBeforeUnload)
+			disconnect()
+		}
+	}, [])
+
+	// 🌟 Подключение к чату
+	const startChat = (mode: ChatMode) => {
+		setChatMode(mode)
 		setChatState('searching')
-		connect()
+
+		if (mode === 'psychologist') connect('psychologist')
+		else if (mode === 'anonymous') connect('anonymous')
+		else if (mode === 'roulette') connect('roulette')
 	}
 
 	const handleSendMessage = () => {
+		if (!messageText.trim()) return
 		sendMessage(messageText)
 		setMessageText('')
 	}
 
 	const handleDisconnect = () => {
-		setChatState('landing')
 		disconnect()
+		setChatMode('landing')
+		setChatState('searching')
 	}
 
-	// new messages
+	// 📜 Автоскролл
 	useEffect(() => {
-		if (logRef.current) {
-			logRef.current.scrollTop = logRef.current.scrollHeight
-		}
+		scrollRef.current?.scrollIntoView({ behavior: 'smooth' })
 	}, [messages])
 
-	// Update chat state based on connection status
+	// 🔄 Состояние чата
 	useEffect(() => {
-		if (connected && roomId) {
-			setChatState('chatting')
-		} else if (!connected && chatState === 'chatting') {
-			setChatState('landing')
-		}
-	}, [connected, roomId, chatState])
+		if (connected && roomId) setChatState('chatting')
+		else setChatState('searching')
+	}, [connected, roomId])
 
-	if (chatState === 'landing') {
+	// Лэндинг
+	if (chatMode === 'landing') {
 		return (
-			<div className='min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4'>
-				<div className='w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center'>
-					<div className='mb-8'>
-						<div className='w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4'>
-							<span className='text-3xl'>💬</span>
-						</div>
-						<h1 className='text-3xl font-bold text-gray-900 dark:text-white mb-2'>Чат рулетка</h1>
-						<p className='text-gray-600 dark:text-gray-400'>Найди собеседника и пообщайся</p>
+			<div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4'>
+				<div className='w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center space-y-6'>
+					<h1 className='text-3xl font-bold text-gray-900 dark:text-white'>Чат поддержки</h1>
+					<p className='text-gray-600 dark:text-gray-400'>Выберите режим общения:</p>
+					<div className='flex flex-col gap-4'>
+						<button
+							className='w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-xl transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5'
+							onClick={() => startChat('anonymous')}
+						>
+							💬 Анонимный чат
+						</button>
+						<button
+							className='w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 rounded-xl transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5'
+							onClick={() => startChat('roulette')}
+						>
+							🎲 Чат рулетка
+						</button>
 					</div>
-
-					<div className='mb-8'>
-						<div className='inline-flex items-center gap-2 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 px-4 py-2 rounded-full text-sm font-medium'>
-							<div className='w-2 h-2 bg-green-500 rounded-full animate-pulse' />
-							Онлайн: {onlineUsers} человек
-						</div>
-					</div>
-
-					<button
-						className='w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl'
-						onClick={handleConnect}
-					>
-						🔗 Подключиться
-					</button>
-
-					<p className='text-xs text-gray-500 dark:text-gray-400 mt-4'>
-						Нажимая "Подключиться", вы соглашаетесь с правилами чата
-					</p>
 				</div>
 			</div>
 		)
 	}
 
-	if (chatState === 'searching') {
+	// Поиск собеседника
+	if (chatMode === 'roulette' && chatState === 'searching') {
 		return (
-			<div className='min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4'>
+			<div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4'>
 				<div className='w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center'>
-					<div className='mb-8'>
-						<div className='w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4'>
-							<div className='animate-spin rounded-full h-8 w-8 border-b-2 border-white' />
+					<div className='mb-8 relative'>
+						<div className='w-20 h-20 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse'>
+							<span className='text-4xl'>🔍</span>
 						</div>
 						<h2 className='text-2xl font-bold text-gray-900 dark:text-white mb-2'>Ищем собеседника...</h2>
 						<p className='text-gray-600 dark:text-gray-400'>Пожалуйста, подождите</p>
 					</div>
 
-					<div className='mb-8'>
-						<div className='flex justify-center space-x-2'>
-							<div className='w-3 h-3 bg-blue-500 rounded-full animate-bounce' />
-							<div
-								className='w-3 h-3 bg-blue-500 rounded-full animate-bounce'
-								style={{ animationDelay: '0.1s' }}
-							/>
-							<div
-								className='w-3 h-3 bg-blue-500 rounded-full animate-bounce'
-								style={{ animationDelay: '0.2s' }}
-							/>
-						</div>
-					</div>
-
-					<div className='space-y-3'>
-						<div className='text-sm text-gray-600 dark:text-gray-400'>
-							{status.icon} {status.text}
+					<div className='space-y-4'>
+						<div className='inline-flex items-center px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-700 text-sm text-gray-600 dark:text-gray-300'>
+							<span className='mr-2 relative flex h-3 w-3'>
+								<span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75' />
+								<span className='relative inline-flex rounded-full h-3 w-3 bg-green-500' />
+							</span>
+							Онлайн: {onlineUsers}
 						</div>
 						<button
-							className='w-full bg-gray-500 hover:bg-gray-600 text-white font-medium py-3 px-6 rounded-xl transition-colors'
-							onClick={() => setChatState('landing')}
+							className='w-full border-2 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium py-3 px-6 rounded-xl transition-colors'
+							onClick={handleDisconnect}
 						>
-							❌ Отмена
+							Отмена
 						</button>
 					</div>
 				</div>
@@ -122,65 +127,131 @@ const ChatPage = () => {
 		)
 	}
 
+	// 💬 Чат (ОСНОВНОЙ ИНТЕРФЕЙС)
 	return (
-		<div className='h-screen bg-gray-50 dark:bg-gray-900 flex flex-col'>
-			{/* Header */}
-			<div className='bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 flex-shrink-0'>
-				<div className='max-w-2xl mx-auto flex items-center justify-between'>
-					<div className='flex items-center gap-3'>
-						<div className='w-10 h-10 bg-green-500 rounded-full flex items-center justify-center'>
-							<span className='text-white text-sm'>💬</span>
+		<div className='h-[100dvh] bg-gray-50 dark:bg-gray-950 relative overflow-hidden'>
+			{/* Header - Fixed Top */}
+			<header className='fixed top-16 left-0 right-0 z-30 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 transition-all'>
+				<div className='max-w-4xl mx-auto px-4 py-3 flex items-center justify-between'>
+					<div className='flex items-center gap-3 overflow-hidden'>
+						<div
+							className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+								chatMode === 'anonymous'
+									? 'bg-green-100 text-green-600'
+									: chatMode === 'psychologist'
+										? 'bg-blue-100 text-blue-600'
+										: 'bg-purple-100 text-purple-600'
+							}`}
+						>
+							<span className='text-xl'>
+								{chatMode === 'anonymous' ? '🎭' : chatMode === 'psychologist' ? '🧠' : '🎲'}
+							</span>
 						</div>
-						<div>
-							<h2 className='font-semibold text-gray-900 dark:text-white'>Чат рулетка</h2>
-							<p className='text-sm text-gray-500 dark:text-gray-400'>Комната: {roomId}</p>
+						<div className='min-w-0'>
+							<h2 className='font-bold text-gray-900 dark:text-white truncate'>
+								{chatMode === 'anonymous'
+									? 'Анонимный чат с психологом'
+									: chatMode === 'psychologist'
+										? 'Психолог'
+										: 'Чат рулетка'}
+							</h2>
+							<div className='flex items-center text-xs text-green-500'>
+								<span className='w-2 h-2 bg-green-500 rounded-full mr-1.5 animate-pulse' />
+								{chatState === 'searching' ? 'Поиск...' : 'Собеседник в сети'}
+							</div>
 						</div>
 					</div>
 					<button
-						className='bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition-colors'
+						className='p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors'
+						title='Завершить чат'
 						onClick={handleDisconnect}
 					>
-						🔌 Выйти
+						<svg
+							fill='none'
+							height='24'
+							stroke='currentColor'
+							strokeLinecap='round'
+							strokeLinejoin='round'
+							strokeWidth='2'
+							viewBox='0 0 24 24'
+							width='24'
+							xmlns='http://www.w3.org/2000/svg'
+						>
+							<path d='M18.36 6.64a9 9 0 1 1-12.73 0' />
+							<line x1='12' x2='12' y1='2' y2='12' />
+						</svg>
 					</button>
 				</div>
-			</div>
+			</header>
 
-			{/* Chat Messages */}
-			<div className='flex-1 overflow-hidden'>
-				<div ref={logRef} className='h-full overflow-y-auto p-4 space-y-3 max-w-2xl mx-auto'>
+			{/* Messages Area */}
+			<main className='h-full w-full overflow-y-auto scroll-smooth'>
+				<div className='max-w-3xl mx-auto p-4 space-y-4 pt-20 pb-32 min-h-full flex flex-col justify-end'>
+					{messages.length === 0 && (
+						<div className='text-center text-gray-400 py-10 text-sm'>Начните общение...</div>
+					)}
+
 					{messages.map((msg) => (
-						<Message key={msg.id} {...msg} />
+						<Message key={msg.id} {...msg} senderId={chatMode !== 'anonymous' ? msg.senderId : ''} />
 					))}
-				</div>
-			</div>
 
-			{/* Message Input */}
-			<div className='bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4 flex-shrink-0 pb-30'>
-				<div className='max-w-2xl mx-auto'>
-					<div className='flex gap-3'>
+					<div ref={scrollRef} className='h-px' />
+				</div>
+			</main>
+
+			{/* Input Area - Fixed Bottom */}
+			<footer className='fixed bottom-0 left-0 right-0 z-30 bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg border-t border-gray-200 dark:border-gray-800 pb-[env(safe-area-inset-bottom)]'>
+				<div className='max-w-3xl mx-auto p-3'>
+					<div className='relative flex items-end gap-2 bg-gray-100 dark:bg-gray-800 p-1.5 rounded-3xl border border-transparent focus-within:border-blue-500/50 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all shadow-sm'>
 						<textarea
-							className='flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none'
-							placeholder='Введите сообщение...'
+							className='flex-1 max-h-32 bg-transparent text-gray-900 dark:text-white placeholder-gray-500 px-4 py-3 focus:outline-none resize-none overflow-y-auto text-base'
+							disabled={chatState !== 'chatting'}
+							placeholder='Напишите сообщение...'
 							rows={1}
 							value={messageText}
-							onChange={(e) => setMessageText(e.target.value)}
+							onChange={(e) => {
+								setMessageText(e.target.value)
+								e.target.style.height = 'auto'
+								e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px'
+							}}
 							onKeyDown={(e) => {
 								if (e.key === 'Enter' && !e.shiftKey) {
 									e.preventDefault()
 									handleSendMessage()
+									const target = e.target as HTMLTextAreaElement
+
+									target.style.height = 'auto'
 								}
 							}}
 						/>
+
 						<button
-							className='bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
-							disabled={!messageText.trim()}
+							className={`mb-1 p-3 rounded-full transition-all flex items-center justify-center flex-shrink-0 ${
+								!messageText.trim() || chatState !== 'chatting'
+									? 'bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed'
+									: 'bg-blue-600 hover:bg-blue-700 text-white shadow-md active:scale-95'
+							}`}
+							disabled={!messageText.trim() || chatState !== 'chatting'}
 							onClick={handleSendMessage}
 						>
-							📨
+							<svg
+								fill='none'
+								height='20'
+								stroke='currentColor'
+								strokeLinecap='round'
+								strokeLinejoin='round'
+								strokeWidth='2'
+								viewBox='0 0 24 24'
+								width='20'
+								xmlns='http://www.w3.org/2000/svg'
+							>
+								<line x1='22' x2='11' y1='2' y2='13' />
+								<polygon points='22 2 15 22 11 13 2 9 22 2' />
+							</svg>
 						</button>
 					</div>
 				</div>
-			</div>
+			</footer>
 		</div>
 	)
 }

@@ -6,7 +6,7 @@ export interface IPagination {
 	last: boolean
 }
 
-export type ChatJoinMode = 'anonymous' | 'psychologist'
+export type ChatJoinMode = 'anonymous' | 'psychologist' | 'roulette'
 
 export interface SupportArticle {
 	id: string
