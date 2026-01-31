@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import { normalizeRole } from '@helpers'
 import { useAuth } from '@hooks'
 import type { IMood } from '@types'
 import { Button } from '@ui'
@@ -33,7 +34,7 @@ export const HeaderAuth = ({ todaysMood }: HeaderAuthProps) => {
 			{!isLoading && !!user && (
 				<div>
 					<p className='italic text-sm'>{user.fullName}</p>
-					<p className='italic text-sm'>{user.roles}</p>
+					<p className='italic text-sm'>{normalizeRole(user.roles)}</p>
 				</div>
 			)}
 			{!isLoading && !!user && !!todaysMood && <p>{todaysMood.label}</p>}
