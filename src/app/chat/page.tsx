@@ -9,12 +9,11 @@ type ChatMode = 'landing' | 'anonymous' | 'psychologist' | 'roulette'
 type ChatState = 'searching' | 'chatting'
 
 const ChatPage = () => {
-	const { status, messages, connected, roomId, connect, disconnect, sendMessage } = useSocketChat()
+	const { messages, connected, roomId, connect, disconnect, sendMessage } = useSocketChat()
 
 	const [chatMode, setChatMode] = useState<ChatMode>('landing')
 	const [chatState, setChatState] = useState<ChatState>('searching')
 	const [messageText, setMessageText] = useState('')
-	const [onlineUsers, setOnlineUsers] = useState(42)
 
 	const scrollRef = useRef<HTMLDivElement>(null)
 
@@ -34,6 +33,15 @@ const ChatPage = () => {
 			disconnect()
 		}
 	}, [])
+
+	useEffect(() => {
+		// Если мы были в режиме чата, но roomId пропал или connected стал false
+		if (chatMode !== 'landing' && !connected && chatState === 'chatting') {
+			alert('Собеседник покинул чат или соединение разорвано.')
+			setChatMode('landing')
+			setChatState('searching')
+		}
+	}, [connected, chatMode, chatState])
 
 	// 🌟 Подключение к чату
 	const startChat = (mode: ChatMode) => {
@@ -87,39 +95,6 @@ const ChatPage = () => {
 							onClick={() => startChat('roulette')}
 						>
 							🎲 Чат рулетка
-						</button>
-					</div>
-				</div>
-			</div>
-		)
-	}
-
-	// Поиск собеседника
-	if (chatMode === 'roulette' && chatState === 'searching') {
-		return (
-			<div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4'>
-				<div className='w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 text-center'>
-					<div className='mb-8 relative'>
-						<div className='w-20 h-20 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse'>
-							<span className='text-4xl'>🔍</span>
-						</div>
-						<h2 className='text-2xl font-bold text-gray-900 dark:text-white mb-2'>Ищем собеседника...</h2>
-						<p className='text-gray-600 dark:text-gray-400'>Пожалуйста, подождите</p>
-					</div>
-
-					<div className='space-y-4'>
-						<div className='inline-flex items-center px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-700 text-sm text-gray-600 dark:text-gray-300'>
-							<span className='mr-2 relative flex h-3 w-3'>
-								<span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75' />
-								<span className='relative inline-flex rounded-full h-3 w-3 bg-green-500' />
-							</span>
-							Онлайн: {onlineUsers}
-						</div>
-						<button
-							className='w-full border-2 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium py-3 px-6 rounded-xl transition-colors'
-							onClick={handleDisconnect}
-						>
-							Отмена
 						</button>
 					</div>
 				</div>

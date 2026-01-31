@@ -78,6 +78,14 @@ export class ChatService {
 				client.subscribe('/user/queue/match', (msg) => {
 					const data = JSON.parse(msg.body)
 
+					if (data.status == 'peer_left') {
+						this.logMessage('Собеседник покинул чат', 'system')
+						// Важно: вызываем дисконнект локально, чтобы сбросить состояния
+						this.disconnect()
+
+						return
+					}
+
 					if (data.room) {
 						this.roomId = data.room
 						this.onRoomIdChange?.(this.roomId)
@@ -118,28 +126,53 @@ export class ChatService {
 	disconnect() {
 		if (!this.stompClient) return
 
+		// Уведомляем бэкенд, чтобы он освободил собеседника
+		if (this.connected && this.stompClient.connected) {
+			this.stompClient.publish({
+				destination: '/app/chat.leave',
+				body: JSON.stringify({ roomId: this.roomId }),
+			})
+		}
+
 		this.stompClient.deactivate()
 		this.stompClient = null
-
 		this.connected = false
 		this.roomId = ''
+		this.messages = [] // Очищаем историю
 		this.status = { text: 'Disconnected', icon: '🔴' }
 
 		this.onStatusChange?.(this.status)
 		this.onConnectedChange?.(this.connected)
 		this.onRoomIdChange?.(this.roomId)
+		this.onMessage?.([])
+	}
 
-		this.logMessage('🔌 Disconnected', 'system')
+	switchChat() {
+		if (!this.stompClient || !this.connected) return
+
+		this.messages = [] // Чистим экран
+		this.onMessage?.([])
+		this.roomId = ''
+		this.onRoomIdChange?.('')
+
+		this.stompClient.publish({
+			destination: '/app/chat.switch',
+			body: '{}',
+		})
+
+		this.logMessage('Ищем нового собеседника...', 'system')
 	}
 
 	sendMessage(content: string) {
 		if (!this.connected || !this.stompClient) {
 			alert('Сначала подключись!')
+
 			return
 		}
 
 		if (!this.roomId || !content.trim()) {
 			alert('roomId не получен или сообщение пустое')
+
 			return
 		}
 
