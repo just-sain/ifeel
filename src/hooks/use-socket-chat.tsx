@@ -1,44 +1,35 @@
 import { useEffect, useRef, useState } from 'react'
 
-import type { IMessage, IUseSocketChatReturn } from '@types'
+import type { ChatJoinMode, IMessage, IUseSocketChatReturn } from '@types'
 import { ChatService } from 'services/chat-service'
 
-export const useSocketChat = (): IUseSocketChatReturn => {
+export const useSocketChat = (): IUseSocketChatReturn & { connect: (mode: ChatJoinMode) => void } => {
 	const [status, setStatus] = useState({ text: 'Disconnected', icon: '🔴' })
 	const [messages, setMessages] = useState<IMessage[]>([])
 	const [connected, setConnected] = useState(false)
 	const [roomId, setRoomId] = useState('')
 
-	const chatService = useRef<ChatService | null>(null)
+	const chatServiceRef = useRef<ChatService | null>(null)
 
 	useEffect(() => {
-		chatService.current = new ChatService()
-		chatService.current.setCallbacks(setMessages, setStatus, setConnected, setRoomId)
+		const service = new ChatService()
+
+		service.setCallbacks(setMessages, setStatus, setConnected, setRoomId)
+		chatServiceRef.current = service
 
 		return () => {
-			chatService.current?.disconnect()
+			service.disconnect()
+			chatServiceRef.current = null
 		}
 	}, [])
-
-	const connect = () => {
-		chatService.current?.connect()
-	}
-
-	const disconnect = () => {
-		chatService.current?.disconnect()
-	}
-
-	const sendMessage = (content: string) => {
-		chatService.current?.sendMessage(content)
-	}
 
 	return {
 		status,
 		messages,
 		connected,
 		roomId,
-		connect,
-		disconnect,
-		sendMessage,
+		connect: (mode) => chatServiceRef.current?.connect(mode),
+		disconnect: () => chatServiceRef.current?.disconnect(),
+		sendMessage: (content) => chatServiceRef.current?.sendMessage(content),
 	}
 }

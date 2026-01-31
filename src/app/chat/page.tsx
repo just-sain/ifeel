@@ -8,7 +8,7 @@ import { useSocketChat } from 'hooks/use-socket-chat'
 type ChatState = 'landing' | 'searching' | 'chatting'
 
 const ChatPage = () => {
-	const { status, messages, connected, roomId, connect, sendMessage } = useSocketChat()
+	const { status, messages, connected, roomId, disconnect, connect, sendMessage } = useSocketChat()
 
 	const [messageText, setMessageText] = useState('')
 	const [chatState, setChatState] = useState<ChatState>('landing')
@@ -27,7 +27,7 @@ const ChatPage = () => {
 
 	const handleDisconnect = () => {
 		setChatState('landing')
-		connect() // This will disconnect since connected is true
+		disconnect()
 	}
 
 	// new messages

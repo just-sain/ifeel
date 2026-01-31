@@ -5,10 +5,10 @@ import type { IMood } from '@types'
 import { Button } from '@ui'
 
 const navLinks = [
-	{ name: 'Бесплатная консультация', href: 'https://wa.link/vs0qne' },
-	{ name: 'Чат рулетка', href: '/chat' },
+	{ name: 'Бесплатная консультация', href: '/support/contact' },
 	{ name: 'Анкета вопросов', href: '/test' },
 	{ name: 'Блокнот', href: '/diary' },
+	{ name: 'Техники', href: '/support/techniques' },
 ]
 
 interface HeaderMobileNavProps {
@@ -24,7 +24,7 @@ export const HeaderMobileNav = ({ isMenuOpen, setIsMenuOpen, todaysMood }: Heade
 		<>
 			{isMenuOpen && (
 				<div className='md:hidden'>
-					<div className='px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700'>
+					<div className='px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-200 dark:border-gray-700'>
 						{navLinks.map((link) => (
 							<Link
 								key={link.href}
@@ -40,7 +40,7 @@ export const HeaderMobileNav = ({ isMenuOpen, setIsMenuOpen, todaysMood }: Heade
 						{!isLoading && !user && (
 							<>
 								<Link
-									className='text-gray-900 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium transition-colors dark:text-white dark:hover:text-blue-400'
+									className='bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-800 text-gray-900 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium transition-colors dark:text-white dark:hover:text-blue-400'
 									href='/login'
 									onClick={() => setIsMenuOpen(false)}
 								>

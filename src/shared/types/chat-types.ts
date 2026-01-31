@@ -12,7 +12,7 @@ export interface IUseSocketChatReturn {
 	messages: IMessage[]
 	connected: boolean
 	roomId: string
-	connect: () => void
+	connect: (anonymous?: boolean) => void
 	disconnect: () => void
 	sendMessage: (content: string) => void
 }

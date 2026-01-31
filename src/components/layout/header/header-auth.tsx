@@ -30,7 +30,12 @@ export const HeaderAuth = ({ todaysMood }: HeaderAuthProps) => {
 					</Link>
 				</>
 			)}
-			{!isLoading && !!user && <p className='italic'>{user.fullName}</p>}
+			{!isLoading && !!user && (
+				<div>
+					<p className='italic text-sm'>{user.fullName}</p>
+					<p className='italic text-sm'>{user.roles}</p>
+				</div>
+			)}
 			{!isLoading && !!user && !!todaysMood && <p>{todaysMood.label}</p>}
 			{!isLoading && !!user && (
 				<Button className='' color='indigo' size='sm' variant='outline' onClick={() => logout()}>

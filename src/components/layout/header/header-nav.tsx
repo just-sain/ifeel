@@ -1,10 +1,10 @@
 import Link from 'next/link'
 
 const navLinks = [
-	{ name: 'Бесплатная консультация', href: 'https://wa.link/vs0qne' },
-	{ name: 'Чат рулетка', href: '/chat' },
+	{ name: 'Бесплатная консультация', href: '/support/contact' },
 	{ name: 'Анкета вопросов', href: '/test' },
 	{ name: 'Блокнот', href: '/diary' },
+	{ name: 'Техники', href: '/support/techniques' },
 ]
 
 export const HeaderNav = () => {
