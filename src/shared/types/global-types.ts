@@ -25,3 +25,13 @@ export interface SupportTechnique {
 		content: string | string[]
 	}>
 }
+
+export interface SupportBook {
+	id: string
+	path: string
+	title: string
+	description: string
+}
+
+export const whatsappNumber = '+77086907725'
+export const whatsappText = encodeURIComponent('Здравствуйте, хочу записаться на консультацию.')

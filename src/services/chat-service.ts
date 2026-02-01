@@ -4,6 +4,32 @@ import SockJS from 'sockjs-client'
 
 import { WS_URL, getAuthToken, parseJwt } from './token'
 
+interface IChatEvent {
+	type:
+		| 'MESSAGE'
+		| 'SYSTEM_MESSAGE'
+		| 'JOIN'
+		| 'LEAVE'
+		| 'WAITING'
+		| 'WAITING_FOR_PSYCHOLOGIST'
+		| 'PSYCHOLOGIST_WAITING'
+		| 'ALREADY_IN_ROOM'
+		| 'CANCEL_WAITING'
+		| 'MATCHED'
+		| 'PEER_LEFT'
+		| 'ROOM_EXPIRED'
+		| 'ROOM_CLEARED'
+		| 'ROOM_CLOSED'
+		| 'SWITCH_CHAT'
+		| 'TYPING'
+		| 'DELIVERED'
+	userId: string
+	peerId: string | null
+	roomId: string | null
+	data: Record<string, unknown>
+	timestamp: string
+}
+
 export class ChatService {
 	private stompClient: Client | null = null
 	private currentUser: string | null = null
@@ -12,22 +38,26 @@ export class ChatService {
 	private roomId = ''
 	private status = { text: 'Disconnected', icon: '🔴' }
 	private messages: IMessage[] = []
+	private pingInterval: ReturnType<typeof setInterval> | null = null
 
 	private onMessage?: (messages: IMessage[]) => void
 	private onStatusChange?: (status: { text: string; icon: string }) => void
 	private onConnectedChange?: (connected: boolean) => void
 	private onRoomIdChange?: (roomId: string) => void
+	private onTyping?: (isTyping: boolean) => void
 
 	setCallbacks(
 		onMessage: (messages: IMessage[]) => void,
 		onStatusChange: (status: { text: string; icon: string }) => void,
 		onConnectedChange: (connected: boolean) => void,
 		onRoomIdChange: (roomId: string) => void,
+		onTyping?: (isTyping: boolean) => void,
 	) {
 		this.onMessage = onMessage
 		this.onStatusChange = onStatusChange
 		this.onConnectedChange = onConnectedChange
 		this.onRoomIdChange = onRoomIdChange
+		this.onTyping = onTyping
 	}
 
 	private logMessage(content: string, type: IMessage['type'] = 'system', senderId = 'system') {
@@ -61,6 +91,8 @@ export class ChatService {
 				Authorization: `Bearer ${token}`,
 			},
 			reconnectDelay: 5000,
+			heartbeatIncoming: 0,
+			heartbeatOutgoing: 0,
 
 			onConnect: () => {
 				this.connected = true
@@ -74,36 +106,30 @@ export class ChatService {
 				this.onStatusChange?.(this.status)
 				this.onConnectedChange?.(this.connected)
 
+				this.startPing()
+
 				// 🔔 match info
 				client.subscribe('/user/queue/match', (msg) => {
-					const data = JSON.parse(msg.body)
+					const event: IChatEvent = JSON.parse(msg.body)
 
-					if (data.status == 'peer_left') {
-						this.logMessage('Собеседник покинул чат', 'system')
-						// Важно: вызываем дисконнект локально, чтобы сбросить состояния
-						this.disconnect()
-
-						return
-					}
-
-					if (data.room) {
-						this.roomId = data.room
-						this.onRoomIdChange?.(this.roomId)
-					}
-
-					if (data.peer) {
-						this.logMessage(`Пользователь ${data.peer} подключился. Начните общение!`, 'system')
-					} else {
-						this.logMessage('Вы подключены к чату. Ожидаем собеседника...', 'system')
-					}
+					this.handleMatchEvent(event)
 				})
 
-				// 💬 сообщения
+				// 💬 messages
 				client.subscribe('/user/queue/messages', (msg) => {
-					const data = JSON.parse(msg.body)
-					const type = data.senderId === this.currentUser ? 'self' : 'peer'
+					const event: IChatEvent = JSON.parse(msg.body)
 
-					this.logMessage(data.content, type, data.senderId)
+					this.handleMessageEvent(event)
+				})
+
+				// ⌨️ typing
+				client.subscribe('/user/queue/typing', (msg) => {
+					const event: IChatEvent = JSON.parse(msg.body)
+
+					if (event.type === 'TYPING' && event.userId !== this.currentUser) {
+						this.onTyping?.(true)
+						setTimeout(() => this.onTyping?.(false), 3000)
+					}
 				})
 
 				// 🚀 КЛЮЧЕВОЕ МЕСТО
@@ -114,6 +140,11 @@ export class ChatService {
 					body: '{}',
 				})
 			},
+			onDisconnect: () => {
+				this.stopPing()
+				this.connected = false
+				this.onConnectedChange?.(false)
+			},
 		})
 
 		client.activate()
@@ -123,7 +154,71 @@ export class ChatService {
 		this.onStatusChange?.(this.status)
 	}
 
+	private handleMatchEvent(event: IChatEvent) {
+		switch (event.type) {
+			case 'MATCHED':
+				if (event.roomId) {
+					this.roomId = event.roomId
+					this.onRoomIdChange?.(this.roomId)
+				}
+
+				const peerName = event.data?.peer || event.peerId || 'Unknown'
+
+				this.logMessage(`Пользователь ${peerName} подключился. Начните общение!`, 'system')
+				break
+
+			case 'WAITING':
+			case 'WAITING_FOR_PSYCHOLOGIST':
+			case 'PSYCHOLOGIST_WAITING':
+				this.logMessage('Вы подключены к чату. Ожидаем собеседника...', 'system')
+				break
+
+			case 'PEER_LEFT':
+				this.logMessage('Собеседник покинул чат', 'system')
+				this.disconnect()
+				break
+
+			case 'ROOM_CLOSED':
+			case 'ROOM_EXPIRED':
+			case 'ROOM_CLEARED':
+				this.logMessage('Чат завершен.', 'system')
+				this.disconnect()
+				break
+
+			case 'SWITCH_CHAT':
+				this.logMessage('Ищем нового собеседника...', 'system')
+				break
+		}
+	}
+
+	private handleMessageEvent(event: IChatEvent) {
+		if (event.type === 'MESSAGE' || event.type === 'SYSTEM_MESSAGE') {
+			const content = event.data?.content || ''
+			const senderId = event.userId || 'system'
+			const type = senderId === 'SYSTEM' ? 'system' : senderId === this.currentUser ? 'self' : 'peer'
+
+			this.logMessage(content, type, senderId)
+		}
+	}
+
+	private startPing() {
+		this.stopPing()
+		this.pingInterval = setInterval(() => {
+			if (this.connected && this.stompClient?.connected) {
+				this.stompClient.publish({ destination: '/app/chat.ping' })
+			}
+		}, 30000)
+	}
+
+	private stopPing() {
+		if (this.pingInterval) {
+			clearInterval(this.pingInterval)
+			this.pingInterval = null
+		}
+	}
+
 	disconnect() {
+		this.stopPing()
 		if (!this.stompClient) return
 
 		// Уведомляем бэкенд, чтобы он освободил собеседника
@@ -186,6 +281,15 @@ export class ChatService {
 			destination: '/app/chat.send',
 			body: JSON.stringify(payload),
 		})
+	}
+
+	sendTyping() {
+		if (this.connected && this.stompClient && this.roomId) {
+			this.stompClient.publish({
+				destination: '/app/chat.typing',
+				body: JSON.stringify({ roomId: this.roomId, senderId: this.currentUser }),
+			})
+		}
 	}
 
 	getStatus() {

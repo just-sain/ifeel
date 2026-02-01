@@ -1,6 +1,6 @@
 export const navLinks = [
 	{ name: 'Чат с психологом', href: '/support/contact' },
-	{ name: 'Анкета вопросов', href: '/test' },
+	{ name: 'Скрининг тест', href: '/test/phq' },
 	{ name: 'Блокнот', href: '/diary' },
 	{ name: 'Техники', href: '/support/techniques' },
 ]

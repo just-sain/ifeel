@@ -2,14 +2,17 @@
 
 import { useEffect, useRef, useState } from 'react'
 
+import { whatsappNumber, whatsappText } from '@types'
 import { Message } from '@ui'
 import { useSocketChat } from 'hooks/use-socket-chat'
+import { ArrowRight, MessageCircle } from 'lucide-react'
 
 type ChatMode = 'landing' | 'anonymous' | 'psychologist' | 'roulette'
 type ChatState = 'searching' | 'chatting'
 
 const ChatPage = () => {
-	const { messages, connected, roomId, connect, disconnect, sendMessage } = useSocketChat()
+	const { messages, connected, roomId, isTyping, connect, disconnect, sendMessage, switchChat, sendTyping } =
+		useSocketChat()
 
 	const [chatMode, setChatMode] = useState<ChatMode>('landing')
 	const [chatState, setChatState] = useState<ChatState>('searching')
@@ -88,14 +91,33 @@ const ChatPage = () => {
 							className='w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-xl transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5'
 							onClick={() => startChat('anonymous')}
 						>
-							💬 Анонимный чат
+							💬 Анонимный чат с психологом
 						</button>
-						<button
-							className='w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 rounded-xl transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5'
-							onClick={() => startChat('roulette')}
+
+						{/* WhatsApp */}
+						<a
+							className='group relative block p-6 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:border-green-500/50 transition-all shadow-sm hover:shadow-md'
+							href={`https://wa.me/${whatsappNumber}?text=${whatsappText}`}
+							rel='noopener noreferrer'
+							target='_blank'
 						>
-							🎲 Чат рулетка
-						</button>
+							<div className='flex items-start gap-4'>
+								<div className='p-3 rounded-xl bg-green-500/10 text-green-600 dark:text-green-500'>
+									<MessageCircle className='w-6 h-6' />
+								</div>
+								<div className='flex-1 space-y-1'>
+									<h3 className='font-bold text-lg text-slate-900 dark:text-zinc-100'>WhatsApp</h3>
+									<p className='text-sm text-muted-foreground leading-relaxed'>
+										Прямая связь для записи на консультацию и уточнения расписания. Более личный формат.
+									</p>
+								</div>
+								<ArrowRight className='w-5 h-5 text-slate-300 dark:text-zinc-600 group-hover:text-green-500 group-hover:translate-x-1 transition-all' />
+							</div>
+							<div className='mt-4 flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-green-600 bg-green-500/5 w-fit px-2 py-1 rounded-md'>
+								<div className='w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse' />
+								Психолог на связи
+							</div>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -132,30 +154,54 @@ const ChatPage = () => {
 							</h2>
 							<div className='flex items-center text-xs text-green-500'>
 								<span className='w-2 h-2 bg-green-500 rounded-full mr-1.5 animate-pulse' />
-								{chatState === 'searching' ? 'Поиск...' : 'Собеседник в сети'}
+								{chatState === 'searching' ? 'Поиск...' : isTyping ? 'печатает...' : 'Собеседник в сети'}
 							</div>
 						</div>
 					</div>
-					<button
-						className='p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors'
-						title='Завершить чат'
-						onClick={handleDisconnect}
-					>
-						<svg
-							fill='none'
-							height='24'
-							stroke='currentColor'
-							strokeLinecap='round'
-							strokeLinejoin='round'
-							strokeWidth='2'
-							viewBox='0 0 24 24'
-							width='24'
-							xmlns='http://www.w3.org/2000/svg'
+					<div className='flex items-center gap-1'>
+						{chatState === 'chatting' && (
+							<button
+								className='p-2 text-gray-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors'
+								title='Следующий собеседник'
+								onClick={switchChat}
+							>
+								<svg
+									fill='none'
+									height='24'
+									stroke='currentColor'
+									strokeLinecap='round'
+									strokeLinejoin='round'
+									strokeWidth='2'
+									viewBox='0 0 24 24'
+									width='24'
+									xmlns='http://www.w3.org/2000/svg'
+								>
+									<polygon points='5 4 15 12 5 20 5 4' />
+									<line x1='19' x2='19' y1='5' y2='19' />
+								</svg>
+							</button>
+						)}
+						<button
+							className='p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors'
+							title='Завершить чат'
+							onClick={handleDisconnect}
 						>
-							<path d='M18.36 6.64a9 9 0 1 1-12.73 0' />
-							<line x1='12' x2='12' y1='2' y2='12' />
-						</svg>
-					</button>
+							<svg
+								fill='none'
+								height='24'
+								stroke='currentColor'
+								strokeLinecap='round'
+								strokeLinejoin='round'
+								strokeWidth='2'
+								viewBox='0 0 24 24'
+								width='24'
+								xmlns='http://www.w3.org/2000/svg'
+							>
+								<path d='M18.36 6.64a9 9 0 1 1-12.73 0' />
+								<line x1='12' x2='12' y1='2' y2='12' />
+							</svg>
+						</button>
+					</div>
 				</div>
 			</header>
 
@@ -186,6 +232,7 @@ const ChatPage = () => {
 							value={messageText}
 							onChange={(e) => {
 								setMessageText(e.target.value)
+								sendTyping()
 								e.target.style.height = 'auto'
 								e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px'
 							}}

@@ -6,10 +6,11 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 const tabs = [
-	{ href: '/support/articles', label: '📚 Статьи' },
-	{ href: '/support/techniques', label: '🧘 Техники' },
+	{ href: '/support/ted', label: '📚 TED Talks - психология' },
+	{ href: '/support/techniques', label: '🧘 Состояние' },
 	{ href: '/support/video', label: '📽️ Видео техники' },
 	{ href: '/support/contact', label: '💬 Связь' },
+	{ href: '/support/books', label: '📕 Книги' },
 ]
 
 export default function SupportLayout({ children }: { children: ReactNode }) {
@@ -19,7 +20,7 @@ export default function SupportLayout({ children }: { children: ReactNode }) {
 		<section className='space-y-6 max-w-7xl w-full mx-auto mt-10 my-20 px-4'>
 			<h1 className='text-2xl font-semibold'>Психологическая поддержка</h1>
 
-			<nav className='flex gap-2 border-b'>
+			<nav className='flex gap-2 border-b justify-center'>
 				{tabs.map((tab) => {
 					const isActive = pathname.includes(tab.href)
 

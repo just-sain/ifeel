@@ -2,12 +2,10 @@
 
 import Link from 'next/link'
 
-import { ArrowRight, Dices, MessageCircle, MessageSquareDot, ShieldCheck, Users } from 'lucide-react'
+import { whatsappNumber, whatsappText } from '@types'
+import { ArrowRight, MessageCircle, MessageSquareDot, ShieldCheck } from 'lucide-react'
 
 export default function Page() {
-	const whatsappNumber = '+77000000000'
-	const whatsappText = encodeURIComponent('Здравствуйте, хочу записаться на консультацию.')
-
 	return (
 		<div className='max-w-2xl mx-auto mt-8 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500'>
 			<div className='space-y-2 text-center md:text-left'>
@@ -40,30 +38,6 @@ export default function Page() {
 					<div className='mt-4 flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/5 w-fit px-2 py-1 rounded-md'>
 						<ShieldCheck className='w-3 h-3' />
 						100% Анонимно
-					</div>
-				</Link>
-
-				{/* НОВАЯ КАРТОЧКА: Чат рулетка */}
-				<Link
-					className='group relative block p-6 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 hover:border-purple-500/50 transition-all shadow-sm hover:shadow-md'
-					href='/chat?mode=roulette'
-				>
-					<div className='flex items-start gap-4'>
-						<div className='p-3 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400'>
-							<Dices className='w-6 h-6' />
-						</div>
-						<div className='flex-1 space-y-1'>
-							<h3 className='font-bold text-lg text-slate-900 dark:text-zinc-100'>Чат-рулетка</h3>
-							<p className='text-sm text-muted-foreground leading-relaxed'>
-								Случайный собеседник, который тоже ищет поддержки. Делитесь опытом и поддерживайте друг друга
-								анонимно.
-							</p>
-						</div>
-						<ArrowRight className='w-5 h-5 text-slate-300 dark:text-zinc-600 group-hover:text-purple-500 group-hover:translate-x-1 transition-all' />
-					</div>
-					<div className='mt-4 flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-purple-600 bg-purple-500/5 w-fit px-2 py-1 rounded-md'>
-						<Users className='w-3 h-3' />
-						Поиск собеседника
 					</div>
 				</Link>
 

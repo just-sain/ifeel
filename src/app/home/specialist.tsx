@@ -29,7 +29,7 @@ export const Specialist = ({ className, name, image, position, age, experience, 
 										strokeWidth={2}
 									/>
 								</svg>
-								<span className='text-gray-600 dark:text-gray-300'>Возраст: {age} лет</span>
+								<span className='text-gray-600 dark:text-gray-300'>Возраст: {age}</span>
 							</div>
 							<div className='flex items-center space-x-3'>
 								<svg className='w-5 h-5 text-gray-500' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
@@ -40,7 +40,7 @@ export const Specialist = ({ className, name, image, position, age, experience, 
 										strokeWidth={2}
 									/>
 								</svg>
-								<span className='text-gray-600 dark:text-gray-300'>Стаж: {experience} лет</span>
+								<span className='text-gray-600 dark:text-gray-300'>Стаж: {experience} год</span>
 							</div>
 						</div>
 						<div className='border-t border-gray-200 dark:border-gray-700 pt-6'>
