@@ -19,6 +19,20 @@ const videoTechniques = [
 		category: 'Телесные техники',
 		url: '/video/stress.mp4',
 	},
+	{
+		id: 'anxiety-mental',
+		title: 'Поведенческие техники',
+		description: 'Набор упражнений для изменения эмоционального состояния через действие и смену привычных реакций.',
+		category: 'Дыхательные техники',
+		url: '/video/anxiety.mp4',
+	},
+	{
+		id: 'anxiety-body',
+		title: 'Техника заземления',
+		description: 'Это самая эффективная техника, задействующая все органы чувств. Остановитесь и найдите вокруг себя',
+		category: 'Дыхательные техники',
+		url: '/video/body.mp4',
+	},
 ]
 
 const categoryStyles: Record<string, { icon: LucideIcon; color: string; bg: string }> = {
